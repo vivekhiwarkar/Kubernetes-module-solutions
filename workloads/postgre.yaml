@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgresql-db
+spec:
+  serviceName: postgresql-db-service
+  selector:
+    matchLabels:
+      app: postgresql-db
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: postgresql-db
+    spec:
+      containers:
+        - name: postgresql-db
+          image: postgres:latest
+          volumeMounts:
+            - name: postgresql-db-disk
+              mountPath: /data
+          env:
+          - name: POSTGRES_DB
+            value: awesomedb
+          - name: POSTGRES_USER
+            value: amazinguser
+          - name: POSTGRES_PASSWORD
+            value: perfectpassword
+      volumes:
+        - name: postgresql-db-disk
+          emptyDir: {}

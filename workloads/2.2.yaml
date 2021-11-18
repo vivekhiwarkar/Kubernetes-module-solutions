@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  labels:
+    name: busybox
+spec:
+  initContainers:
+    - name: create-static-file
+      image: alpine
+      command: ["touch","/tmp/static_file"]
+      volumeMounts:
+        - mountPath: /tmp
+          name: my-data
+  containers:
+  - name: demo
+    image: nginx
+    volumeMounts:
+        - mountPath: /tmp
+          name: my-data
+    
+    livenessProbe:
+      exec:
+        command:
+          - cat
+          - /tmp/static_file
+      initialDelaySeconds: 5
+      periodSeconds: 1
+
+  volumes:
+    - name: my-data
+      emptyDir: {}
